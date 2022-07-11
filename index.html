@@ -75,7 +75,7 @@
                 <table class="table table-striped" id="employeeList">
                     <thead>
                         <tr>
-                            <th class="text-center">#</th>
+                            <!-- <th class="text-center">#</th> -->
                             <th class="text-center">Full Name</th>
                             <th class="text-center">Email Id</th>
                             <th class="text-center">Salary</th>
@@ -84,49 +84,17 @@
                         </tr>
                     </thead>
                     <tbody class="list">
-                        <tr>
-                            <td class="text-center">1</td>
-                            <td class="text-center">John Doe</td>
-                            <td class="text-center">john09@gmail.com</td>
-                            <td class="text-center">10000</td>
-                            <td class="text-center">Noida</td>
-                            <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
-                                <button onClick="editUser(this)" data-bs-toggle="modal" data-bs-target="#form" class="btn btn-info">Edit</button>
-                                <button onClick="deleteUser(this)" class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">2</td>
-                            <td class="text-center">Ross Doe</td>
-                            <td class="text-center">rossxox@gmail.com</td>
-                            <td class="text-center">10000</td>
-                            <td class="text-center">Varanasi</td>
-                            <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
-                                <button onClick="editUser(this)" data-bs-toggle="modal" data-bs-target="#form" class="btn btn-info">Edit</button>
-                                <button onClick="deleteUser(this)" class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td class="text-center">3</td>
-                            <td class="text-center">Imran Doe</td>
-                            <td class="text-center">Imran@gmail.com</td>
-                            <td class="text-center">10000</td>
-                            <td class="text-center">Delhi</td>
-                            <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
-                                <button onClick="editUser(this)" data-bs-toggle="modal" data-bs-target="#form" class="btn btn-info">Edit</button>
-                                <button onClick="deleteUser(this)" class="btn btn-danger">Delete</button>
-                            </td>
-                        </tr>
                         <!-- template  -->
 
                         <!-- <tr>
-                            <td>${data.name}</td>
-                            <td>${data.email}</td>
-                            <td>${data.salary}</td>
-                            <td>${data.city}</td>
+                            <td class="text-center">${index}</td>
+                            <td class="text-center">${user.name}</td>
+                            <td class="text-center">${user.email}</td>
+                            <td class="text-center">${user.salary}</td>
+                            <td class="text-center">${user.city}</td>
                             <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
-                                <i onClick="editUser(this)" data-bs-toggle="modal" data-bs-target="#form" class="fas fa-edit"></i>
-                                <i onClick="deleteUser(this)" class="fas fa-trash-alt"></i>
+                                <button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#form">Edit</button>
+                                <button class="btn btn-danger delete">Delete</button>
                             </td>
                         </tr> -->
 

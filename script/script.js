@@ -1,202 +1,216 @@
-/*------------------------Form------------------------- */
-let myform = document.getElementById("form");
-let nameInput = document.getElementById("fullName");
-let emailInput = document.getElementById("email");
-let salaryInput = document.getElementById("salary");
-let cityInput = document.getElementById("city");
-let errorMessage = document.getElementsByClassName("msg");
-/*------------------------Form------------------------- */
-/*------------------------Table------------------------- */
-let list = document.querySelector(".list");
-let add = document.getElementById("add");
-let closeBtn = document.getElementById("closeBtn");
-let closeIcon = document.getElementById("closeIcon");
-/*------------------------Table------------------------- */
-/*------------------------Toast------------------------- */
-let myAlert = document.getElementById("toast-container");
-let alertMessage = document.querySelector(".toast-body");
-let toastBgColor = document.querySelector(".toast");
-/*------------------------Toast------------------------- */
+//User class : Represents a user
+class User {
+    constructor(name, email, salary, city) {
+        this.name = name;
+        this.email = email;
+        this.salary = salary;
+        this.city = city;
+    }
 
-myform.addEventListener("submit", (e) => {
+}
+// UI class : Handle UI task
+class UI {
+    // Display user data
+    static displayData() {
+        // Dynamic user data for Example
+        const storeUser = [{
+                name: "John Doe",
+                email: "john09@gmail.com",
+                salary: 10000,
+                city: "Delhi"
+            },
+            {
+                name: "Jane Doe",
+                email: "jane111@gmail.com",
+                salary: 10000,
+                city: "Mexico City"
+            },
+            {
+                name: "Leo",
+                email: "leo10@gmail.com",
+                salary: 10000,
+                city: "Bharatpur"
+            }
+        ];
+        const users = storeUser;
+
+        users.forEach((user) => UI.addUserToList(user));
+    }
+
+    // Add user to list
+    static addUserToList(user) {
+        const list = document.querySelector(".list");
+        // Create row in table with template data
+        const row = document.createElement('tr');
+        row.innerHTML = `
+                <td class="text-center">${user.name}</td>
+                <td class="text-center">${user.email}</td>
+                <td class="text-center">${user.salary}</td>
+                <td class="text-center">${user.city}</td>
+                <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
+                    <button class="btn btn-info edit" data-bs-toggle="modal" data-bs-target="#form">Edit</button>
+                    <button class="btn btn-danger delete">Delete</button>
+                </td>
+        `
+        list.appendChild(row); // Append or add user in table
+
+        document.getElementById("add").addEventListener('click', () => {
+            UI.alertToast("Add new user", "bg-success"); // alert message for adding new user
+        });
+
+        // it will reset form if clicked any of the button.
+        document.getElementById("closeBtn").addEventListener('click', (e) => {
+            UI.resetForm();
+            UI.alertToast("Pls fill the form Again", "bg-info"); // alert message for fill form again
+        });
+        document.getElementById("closeIcon").addEventListener('click', (e) => {
+            UI.resetForm();
+            UI.alertToast("Pls fill the form Again", "bg-info"); // alert message for fill form again
+        });
+    }
+
+    // Edit user 
+    static editUser(el) {
+        // Target element className edit
+        if (el.classList.contains('edit')) {
+            // Insert data in form for editing purpose
+            const selectedTask = el.parentElement.parentElement;
+            document.getElementById("fullName").value = selectedTask.children[0].innerHTML;
+            document.getElementById("email").value = selectedTask.children[1].innerHTML;
+            document.getElementById("salary").value = selectedTask.children[2].innerHTML;
+            document.getElementById("city").value = selectedTask.children[3].innerHTML;
+            // after editing it will removed selected task onclick add btn
+            document.getElementById("add").addEventListener('click', (el) => {
+                selectedTask.remove();
+                UI.alertToast("Edit User", "bg-primary"); // alert message for edit
+            });
+            // it will reset form for adding new user if its not edit
+            document.getElementById("closeBtn").addEventListener('click', (e) => {
+                UI.resetForm();
+            });
+            document.getElementById("closeIcon").addEventListener('click', (e) => {
+                UI.resetForm()
+            });
+        }
+    }
+
+    // Delete user
+    static deleteUser(el) {
+        // Target element className delete
+        if (el.classList.contains('delete')) {
+            el.parentElement.parentElement.remove();
+            UI.alertToast("Remove User", "bg-danger"); // alert message for delete
+        }
+    }
+
+    // Alert toast
+    static alertToast(message, className) {
+        const myAlert = document.getElementById("toast-container");
+        let alertMessage = document.querySelector(".toast-body")
+        let bsAlert = new bootstrap.Toast(myAlert); //inizialize it
+        bsAlert.show(); //show it
+        // Add classname and message according to click of Events
+        myAlert.classList.add(`${className}`)
+        alertMessage.innerHTML = `
+            <h6>${message}</h6>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+        `;
+    }
+
+    // Reset or clear form input fields
+    static resetForm() {
+        // Clear form input fields
+        document.getElementById("fullName").value = "";
+        document.getElementById("email").value = "";
+        document.getElementById("salary").value = "";
+        document.getElementById("city").value = "";
+        // Remove Error message 
+        const errorMessage = document.getElementsByClassName("msg");
+        errorMessage[0].innerHTML = "";
+        errorMessage[1].innerHTML = "";
+        errorMessage[2].innerHTML = "";
+        errorMessage[3].innerHTML = "";
+    }
+};
+
+// Event: Add Users
+let myform = document.getElementById("form").addEventListener("submit", (e) => {
     e.preventDefault();
-    formValidation();
-});
+    // Get input value
+    const name = document.getElementById("fullName").value;
+    const email = document.getElementById("email").value;
+    const salary = document.getElementById("salary").value;
+    const city = document.getElementById("city").value;
+    const errorMessage = document.getElementsByClassName("msg");
 
-// VALIDATION form
-let formValidation = () => {
+    // Validate Form
+    // Regex
     let nameExp = /^[a-zA-Z\s]+$/;
     let emailExp = /^([\w-\.]+@([\w-]+\.)+[\w-]{2,4})?$/;
     let addExp = /^[a-zA-Z0-9\s,.'-]{3,}$/;
 
-    if (nameInput.value === "") {
+    // Validate name input field
+    if (name === "") {
         errorMessage[0].innerHTML = "Pls Enter Name";
         return false;
-    } else if (!nameInput.value.match(nameExp)) {
+    } else if (!name.match(nameExp)) {
         errorMessage[0].innerHTML = "Pls Enter Valid Name";
         return false;
     } else {
         errorMessage[0].innerHTML = "";
-    }
-
-    if (emailInput.value === "") {
+    };
+    // Validate email input field
+    if (email === "") {
         errorMessage[1].innerHTML = "Pls Enter Email";
         return false;
-    } else if (!emailInput.value.match(emailExp)) {
+    } else if (!email.match(emailExp)) {
         errorMessage[1].innerHTML = "Pls Enter Valid Email";
         return false;
     } else {
         errorMessage[1].innerHTML = "";
-    }
-
-    if (salaryInput.value === "") {
+    };
+    // Validate salary input field
+    if (salary === "") {
         errorMessage[2].innerHTML = "Pls Enter Salary";
         return false;
     } else {
         errorMessage[2].innerHTML = "";
-    }
-
-    if (cityInput.value === "") {
+    };
+    // Validate city input field
+    if (city === "") {
         errorMessage[3].innerHTML = "Pls Enter City";
         return false;
-    } else if (!cityInput.value.match(addExp)) {
+    } else if (!city.match(addExp)) {
         errorMessage[3].innerHTML = "Pls Enter Valid City";
         return false;
     } else {
         errorMessage[3].innerHTML = "";
-    }
-    acceptData();
-    // targting add button to closed model after filling form.
-    add.setAttribute("data-bs-dismiss", "modal");
-    add.click();
-    // it will not allow closed model action without filling form.
-    (() => {
-        add.setAttribute("data-bs-dismiss", "");
-    })();
-};
-
-// Init Toast bar
-let alertToast = () => {
-    let bsAlert = new bootstrap.Toast(myAlert); //inizialize it
-    bsAlert.show(); //show it
-};
-
-// ACCEPT DATA fun enter in form.
-let data = {};
-// accept that name, email, salary, city Values in array.
-let acceptData = () => {
-
-    data["name"] = nameInput.value;
-    data["email"] = emailInput.value;
-    data["salary"] = salaryInput.value;
-    data["city"] = cityInput.value;
-
-    // console.log(data);
-    createUser();
-    resetForm();
-};
-
-
-// Generation Unique ID
-function generator() {
-    var i = 4;
-    return function() {
-        return i++;
     };
-}
 
-var generateId = generator();
+    // targting add button and setAttribute to closed model after filling form.
+    document.getElementById("add").setAttribute("data-bs-dismiss", "modal");
+    add.click();
 
-// CREATE + template
-let createUser = () => {
-    list.innerHTML += `
-            <tr>
-                <td class="text-center">${generateId()}</td>
-                <td class="text-center">${data.name}</td>
-                <td class="text-center">${data.email}</td>
-                <td class="text-center">${data.salary}</td>
-                <td class="text-center">${data.city}</td>
-                <td class="action d-flex flex-row justify-content-center align-items-center gap-3">
-                    <button onClick="editUser(this)" data-bs-toggle="modal" data-bs-target="#form" class="btn btn-info">Edit</button>
-                    <button onClick="deleteUser(this)" class="btn btn-danger">Delete</button>
-                </td>
-            </tr>
-    `
+    // Instance user
+    const user = new User(name, email, salary, city);
+    // console.log(user)
 
+    // Add User to UI
+    UI.addUserToList(user);
 
-    // init toast bar
-    addUserMessage();
-    alertToast();
-};
+    // Reset the form
+    UI.resetForm();
+});
 
+// Event: Edit User
+document.querySelector(".list").addEventListener('click', (e) => {
+    UI.editUser(e.target);
+});
 
+// Event: Remove User
+document.querySelector(".list").addEventListener('click', (e) => {
+    UI.deleteUser(e.target);
+});
 
-// Adding class bg-success in toast with template text
-let addUserMessage = () => {
-    toastBgColor.classList.add("bg-success");
-    alertMessage.innerHTML = `
-        <h6>Add new user</h6>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    `
-};
-
-// EDIT
-let editUser = (e) => {
-    let selectedTask = e.parentElement.parentElement;
-    nameInput.value = selectedTask.children[1].innerHTML;
-    emailInput.value = selectedTask.children[2].innerHTML;
-    salaryInput.value = selectedTask.children[3].innerHTML;
-    cityInput.value = selectedTask.children[4].innerHTML;
-    // console.log(selectedTask)
-    // after editing it will removed selected task onclick add btn
-    add.addEventListener("click", (e) => {
-        selectedTask.remove();
-        // init toast bar
-        editMessage();
-        alertToast();
-    });
-    // it will reset form for adding new user if its not edit
-    closeBtn.addEventListener("click", (e) => {
-        resetForm();
-    });
-    closeIcon.addEventListener("click", (e) => {
-        resetForm();
-    });
-
-};
-
-
-// Adding class bg-primary in toast with template text
-let editMessage = () => {
-    toastBgColor.classList.add("bg-primary");
-    alertMessage.innerHTML = `
-        <h6>Edit user</h6>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    `
-};
-
-
-// DELETE
-let deleteUser = (e) => {
-    e.parentElement.parentElement.remove();
-    // init toast bar
-    deleteMessage();
-    alertToast();
-}
-
-// Adding class bg-danger in toast with template text
-let deleteMessage = () => {
-    toastBgColor.classList.add("bg-danger");
-    alertMessage.innerHTML = `
-        <h6>Delete user</h6>
-        <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
-    `
-}
-
-// RESET
-let resetForm = () => {
-    nameInput.value = "";
-    emailInput.value = "";
-    salaryInput.value = "";
-    cityInput.value = "";
-}
+// Event: Display Users
+document.addEventListener('DOMContentLoaded', UI.displayData);
