@@ -12,36 +12,17 @@ class User {
 class UI {
     // Display user data
     static displayData() {
-        // Dynamic user data for Example
-        const storeUser = [{
-                name: "John Doe",
-                email: "john09@gmail.com",
-                salary: 10000,
-                city: "Delhi"
-            },
-            {
-                name: "Jane Doe",
-                email: "jane111@gmail.com",
-                salary: 10000,
-                city: "Mexico City"
-            },
-            {
-                name: "Leo",
-                email: "leo10@gmail.com",
-                salary: 10000,
-                city: "Bharatpur"
-            }
-        ];
-        const users = storeUser;
-
-        users.forEach((user) => UI.addUserToList(user));
+        const users = Store.getUsers();
+        users.forEach((user, index) => UI.addUserToList(user, index));
     }
 
+
     // Add user to list
-    static addUserToList(user) {
+    static addUserToList(user, index) {
         const list = document.querySelector(".list");
         // Create row in table with template data
         const row = document.createElement('tr');
+        row.setAttribute('id', `${index}`);
         row.innerHTML = `
                 <td class="text-center">${user.name}</td>
                 <td class="text-center">${user.email}</td>
@@ -71,6 +52,7 @@ class UI {
 
     // Edit user 
     static editUser(el) {
+        console.log(el);
         // Target element className edit
         if (el.classList.contains('edit')) {
             // Insert data in form for editing purpose
@@ -92,6 +74,7 @@ class UI {
                 UI.resetForm()
             });
         }
+
     }
 
     // Delete user
@@ -132,6 +115,35 @@ class UI {
         errorMessage[3].innerHTML = "";
     }
 };
+// Store Class: Handles Storage
+class Store {
+    static getUsers() {
+        let users;
+        if (localStorage.getItem('users') === null) {
+            users = [];
+        } else {
+            users = JSON.parse(localStorage.getItem('users'));
+        }
+
+        return users;
+    }
+
+    static addUser(user) {
+        const users = Store.getUsers();
+        users.push(user);
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+
+    static removeUser(user, el) {
+        const users = Store.getUsers();
+        // console.log(user.id)
+        users.splice(user.id, 1)
+        localStorage.setItem('users', JSON.stringify(users));
+    }
+}
+
+// Event: Display Users
+document.addEventListener('DOMContentLoaded', UI.displayData);
 
 // Event: Add Users
 let myform = document.getElementById("form").addEventListener("submit", (e) => {
@@ -198,6 +210,9 @@ let myform = document.getElementById("form").addEventListener("submit", (e) => {
     // Add User to UI
     UI.addUserToList(user);
 
+    // Add User to store
+    Store.addUser(user);
+
     // Reset the form
     UI.resetForm();
 });
@@ -210,7 +225,5 @@ document.querySelector(".list").addEventListener('click', (e) => {
 // Event: Remove User
 document.querySelector(".list").addEventListener('click', (e) => {
     UI.deleteUser(e.target);
+    Store.removeUser(e.target.parentElement.parentElement);
 });
-
-// Event: Display Users
-document.addEventListener('DOMContentLoaded', UI.displayData);
