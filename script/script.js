@@ -48,6 +48,9 @@ class UI {
             UI.resetForm();
             UI.alertToast("Pls fill the form Again", "bg-info"); // alert message for fill form again
         });
+
+        // changing UI onClick Add User button
+        UI.modalUI("show btn btn-secondary", "Add new user", "space-between", "flex-end", "initial");
     }
 
     // Edit user 
@@ -66,13 +69,8 @@ class UI {
                 selectedTask.remove();
                 UI.alertToast("Edit User", "bg-primary"); // alert message for edit
             });
-            // it will reset form for adding new user if its not edit
-            document.getElementById("closeBtn").addEventListener('click', (e) => {
-                UI.resetForm();
-            });
-            document.getElementById("closeIcon").addEventListener('click', (e) => {
-                UI.resetForm()
-            });
+            // changing UI onClick edit button
+            UI.modalUI("hide", "Edit User", "center", "center", "30%");
         }
 
     }
@@ -98,6 +96,16 @@ class UI {
             <h6>${message}</h6>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         `;
+    }
+
+    // Modal UI
+    static modalUI(className, heading, headerJustify, footerJustify, width) {
+        document.getElementById("closeBtn").setAttribute('class', `${className}`);
+        document.getElementById("closeIcon").setAttribute('class', `${className} btn-close`);
+        document.querySelector(".modal-title").innerHTML = `${heading}`;
+        document.querySelector(".modal-header").style = `justify-content:${headerJustify}`;
+        document.querySelector(".modal-footer").style = `justify-content:${footerJustify}`;
+        document.getElementById("add").style = `width:${width}`;
     }
 
     // Reset or clear form input fields
